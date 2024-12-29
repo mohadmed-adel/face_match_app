@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:face_match_app/face_net_service.dart';
 import 'package:face_match_app/services.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -36,8 +40,8 @@ class _FaceMatchAppState extends State<FaceMatchApp> {
 
   Future<void> _compareFaces() async {
     if (_imagePath1 != null && _imagePath2 != null) {
-      final input1 = Services.preprocessImage(_imagePath1!);
-      final input2 = Services.preprocessImage(_imagePath2!);
+      final Float32List input1 = Services.preprocessImage(_imagePath1!);
+      final Float32List input2 = Services.preprocessImage(_imagePath2!);
 
       final emb1 = _faceNetService.getEmbeddings(input1);
       final emb2 = _faceNetService.getEmbeddings(input2);
@@ -65,6 +69,20 @@ class _FaceMatchAppState extends State<FaceMatchApp> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Row(
+                children: [
+                  if (_imagePath1 != null)
+                    Image.file(
+                      File(_imagePath1!),
+                      width: MediaQuery.sizeOf(context).width / 2,
+                    ),
+                  if (_imagePath2 != null)
+                    Image.file(
+                      File(_imagePath2!),
+                      width: MediaQuery.sizeOf(context).width / 2,
+                    ),
+                ],
+              ),
               ElevatedButton(
                 onPressed: () => _pickImage(1),
                 child: const Text('Select Image 1'),
